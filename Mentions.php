@@ -289,7 +289,7 @@ function Mentions_Profile($memID)
                 ),
                 'data' => array(
                     'sprintf' => array(
-                        'format' => '<a href="' . $scripturl . '?post=%d">%s</a>',
+                        'format' => '<a href="' . $scripturl . '?msg=%d">%s</a>',
                         'params' => array(
                             'id_post' => false,
                             'subject' => false,
