@@ -1,0 +1,13 @@
+[center][b]@mentions tag mod[/b]
+By: Shitiz Garg (mail@dragooon.net)
+Licensed under: Simplified BSD (2-Clause) License 
+Source: http://github.com/Dragooon/smf-mentions[/center]
+
+[b]About[/b]
+[hr]
+Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membeergroups to be granted permission to mention others
+
+[b]To Do:[/b]
+[hr]
+1. Add active dropdown while tagging members to give username suggestions
+2. Awesomeness :P

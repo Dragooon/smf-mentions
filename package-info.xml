@@ -7,7 +7,7 @@
 	<version>1.0</version>
 
 	<install for="2.0 - 2.0.99">
-		<readme parsebbc="true">README</readme>
+		<readme parsebbc="true">README.bbc</readme>
 		<code>db_mentions.php</code>
 		<modification>install.xml</modification>
 		<require-file name="Mentions.php" destination="$sourcedir" />
