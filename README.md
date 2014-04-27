@@ -1,7 +1,7 @@
-# -> @mentions tag mod
--> By Shitiz Garg (mail@dragooon.net) <-
--> Licensed under Simplified BSD (2-Clause) License <-
--> http://github.com/Dragooon/smf-mentions <-
+# @mentions tag mod
+* **By:** Shitiz Garg (mail@dragooon.net)
+* **Licensed under:** Simplified BSD (2-Clause) License 
+* **Source:** http://github.com/Dragooon/smf-mentions
 
 ## About
 
