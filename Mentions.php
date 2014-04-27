@@ -137,9 +137,26 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 
     $names = array_unique(array_map('trim', $names));
 
+    // Get the membergroups this message can be seen by
+    $request = $smcFunc['db_query']('', '
+        SELECT b.member_groups
+        FROM {db_prefix}boards AS b
+        WHERE id_board = {int:board}',
+        array(
+            'board' => $topicOptions['board'],
+        )
+    );
+    list ($member_groups) = $smcFunc['db_fetch_row']($request);
+    $smcFunc['db_free_result']($request);
+    $member_groups = explode(',', $member_groups);
+    foreach ($member_groups as $k => $group)
+        // Dunno why
+        if (strlen($group) == 0)
+            unset($member_groups[$k]);
+
     // Attempt to fetch all the valid usernames along with their required metadata
     $request = $smcFunc['db_query']('', '
-        SELECT id_member, real_name, email_mentions, email_address, unread_mentions
+        SELECT id_member, real_name, email_mentions, email_address, unread_mentions, id_group, id_post_group, additional_groups
         FROM {db_prefix}members
         WHERE real_name IN ({array_string:names})
         ORDER BY LENGTH(real_name) DESC
@@ -158,6 +175,7 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
             'email_mentions' => $row['email_mentions'],
             'email_address' => $row['email_address'],
             'unread_mentions' => $row['unread_mentions'],
+            'groups' => array_unique(array_merge(array($row['id_group'], $row['id_post_group']), explode(',', $row['additional_groups']))),
         );
     $smcFunc['db_free_result']($request);
     if (empty($members))
@@ -167,7 +185,8 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
     $msgOptions['mentions'] = array();
     foreach ($members as $member)
     {
-        if (strpos($msgOptions['body'], '@' . $member['real_name']) === false)
+        if (strpos($msgOptions['body'], '@' . $member['real_name']) === false
+            || (!in_array(1, $member['groups']) && count(array_intersect($member['groups'], $member_groups)) == 0))
             continue;
 
         $msgOptions['body'] = str_replace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['original_name'] . '[/member]', $msgOptions['body']);
