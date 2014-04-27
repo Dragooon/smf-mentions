@@ -33,28 +33,16 @@ function mentions_bbc(array &$bbc_tags)
  */
 function mentions_menu(array &$menu_buttons)
 {
-    global $txt, $scripturl, $smcFunc, $user_info;
+    global $txt, $scripturl, $smcFunc, $user_info, $user_settings;
 
     loadLanguage('Mentions');
 
-    $request = $smcFunc['db_query']('', '
-        SELECT COUNT(*)
-        FROM {db_prefix}log_mentions
-        WHERE id_mentioned = {int:member}
-          AND unseen = 1',
-        array(
-            'member' => $user_info['id'],
-        )
-    );
-    list ($user_info['unseen_mentions']) = $smcFunc['db_fetch_row']($request);
-    $smcFunc['db_free_result']($request);
-
     $menu_buttons['profile']['sub_buttons']['mentions'] = array(
-        'title' => $txt['mentions'] . (!empty($user_info['unseen_mentions']) ? ' [' . $user_info['unseen_mentions'] . ']' : ''),
+        'title' => $txt['mentions'] . (!empty($user_settings['unread_mentions']) ? ' [' . $user_settings['unread_mentions'] . ']' : ''),
         'href' => $scripturl . '?action=profile;area=mentions',
         'show' => true,
     );
-    $menu_buttons['profile']['title'] .=  (!empty($user_info['unseen_mentions']) ? ' [' . $user_info['unseen_mentions'] . ']' : '');
+    $menu_buttons['profile']['title'] .=  (!empty($user_settings['unread_mentions']) ? ' [' . $user_settings['unread_mentions'] . ']' : '');
 }
 
 /**
@@ -151,7 +139,7 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 
     // Attempt to fetch all the valid usernames along with their required metadata
     $request = $smcFunc['db_query']('', '
-        SELECT id_member, real_name, email_mentions, email_address
+        SELECT id_member, real_name, email_mentions, email_address, unread_mentions
         FROM {db_prefix}members
         WHERE real_name IN ({array_string:names})
         ORDER BY LENGTH(real_name) DESC
@@ -168,7 +156,8 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
             'real_name' => str_replace('@', '\@', $row['real_name']),
             'original_name' => $row['real_name'],
             'email_mentions' => $row['email_mentions'],
-            'email_address' => $row['email_address']
+            'email_address' => $row['email_address'],
+            'unread_mentions' => $row['unread_mentions'],
         );
     $smcFunc['db_free_result']($request);
     if (empty($members))
@@ -228,6 +217,8 @@ function mentions_process_store(array $mentions, $id_post, $subject)
             $body = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_body']);
             sendmail($mention['email_address'], $subject, $body);
         }
+
+        updateMemberData($mention['id'], array('unread_mentions' => $mention['unread_mentions'] + 1));
     }
 }
 
@@ -243,17 +234,21 @@ function Mentions_Profile($memID)
 
     loadLanguage('Mentions');
 
-    if (!empty($_POST['save']))
+    if (!empty($_POST['save']) && $user_info['id'] == $memID)
         updateMemberData($memID, array('email_mentions' => (bool) !empty($_POST['email_mentions'])));
 
-    $smcFunc['db_query']('', '
-        UPDATE {db_prefix}log_mentions
-        SET unseen = 0
-        WHERE id_mentioned = {int:member}',
-        array(
-            'member' => $user_info['id'],
-        )
-    );
+    if ($memID == $user_info['id'])
+    {
+        $smcFunc['db_query']('', '
+            UPDATE {db_prefix}log_mentions
+            SET unseen = 0
+            WHERE id_mentioned = {int:member}',
+            array(
+                'member' => $user_info['id'],
+            )
+        );
+        updateMemberData($user_info['id'], array('unread_mentions' => 0));
+    }
 
     $request = $smcFunc['db_query']('', '
         SELECT emaiL_mentions

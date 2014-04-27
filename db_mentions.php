@@ -27,6 +27,9 @@ $smcFunc['db_create_table']('{db_prefix}log_mentions', array(
 $smcFunc['db_add_column']('{db_prefix}members', array(
     'name' => 'email_mentions', 'type' => 'tinyint', 'null' => false, 'default' => 0,
 ));
+$smcFunc['db_add_column']('{db_prefix}members', array(
+    'name' => 'unread_mentions', 'type' => 'int', 'null' => false, 'default' => 0,
+));
 
 $hooks = array(
     'integrate_pre_include' => '$sourcedir/Mentions.php',
