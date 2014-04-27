@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+    <id>Dragooon:Mentions</id>
+    <name>@mention members</name>
+
+    <file name="$sourcedir/Subs-Post.php">
+        <operation>
+            <search position="after"><![CDATA[
+	// It's do or die time: forget any user aborts!]]></search>
+            <add><![CDATA[
+    global $sourcedir;
+    require_once($sourcedir . '/Mentions.php');
+    mentions_process_post($msgOptions, $topicOptions, $posterOptions);
+
+]]></add>
+        </operation>
+        <operation>
+            <search position="after"><![CDATA[
+	// Success.]]></search>
+            <add><![CDATA[
+    mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject']);
+
+]]></add>
+        </operation>
+    </file>
+
+</modification>

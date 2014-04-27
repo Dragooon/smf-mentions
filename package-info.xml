@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>@mention members</name>
+	<id>Dragooon:mentions</id>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="2.0 - 2.0.99">
+		<readme parsebbc="true">README</readme>
+		<code>db_mentions.php</code>
+		<modification>install.xml</modification>
+		<require-file name="Mentions.php" destination="$sourcedir" />
+		<require-file name="Mentions.english.php" destination="$themedir/languages" />
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<modification reverse="true">install.xml</modification>
+		<remove-file name="$sourcedir/Mentions.php" />
+		<remove-file name="$themedir/languages/Mentions.english.php" />
+	</uninstall>
+
+</package-info>
