@@ -6,15 +6,20 @@
 
 	<file name="$sourcedir/Subs-Post.php">
 		<operation>
+			<search position="before"><![CDATA[	global $user_info, $txt, $modSettings, $smcFunc, $context]]></search>
+			<add><![CDATA[, $sourcedir]]></add>
+		</operation>
+
+		<operation>
 			<search position="after"><![CDATA[
 	// It's do or die time: forget any user aborts!]]></search>
 			<add><![CDATA[
-	global $sourcedir;
 	require_once($sourcedir . '/Mentions.php');
 	mentions_process_post($msgOptions, $topicOptions, $posterOptions);
 
 ]]></add>
 		</operation>
+
 		<operation>
 			<search position="after"><![CDATA[
 	// Success.]]></search>
