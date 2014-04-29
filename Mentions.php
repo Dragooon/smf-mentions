@@ -15,14 +15,14 @@
  */
 function mentions_bbc(array &$bbc_tags)
 {
-    global $scripturl;
+	global $scripturl;
 
-    $bbc_tags[] = array(
-        'tag' => 'member',
-        'type' => 'unparsed_equals',
-        'before' => '<a href="' . $scripturl . '?action=profile;u=$1" class="mention">@',
-        'after' => '</a>',
-    );
+	$bbc_tags[] = array(
+		'tag' => 'member',
+		'type' => 'unparsed_equals',
+		'before' => '<a href="' . $scripturl . '?action=profile;u=$1" class="mention">@',
+		'after' => '</a>',
+	);
 }
 
 /**
@@ -33,16 +33,16 @@ function mentions_bbc(array &$bbc_tags)
  */
 function mentions_menu(array &$menu_buttons)
 {
-    global $txt, $scripturl, $smcFunc, $user_info, $user_settings;
+	global $txt, $scripturl, $smcFunc, $user_info, $user_settings;
 
-    loadLanguage('Mentions');
+	loadLanguage('Mentions');
 
-    $menu_buttons['profile']['sub_buttons']['mentions'] = array(
-        'title' => $txt['mentions'] . (!empty($user_settings['unread_mentions']) ? ' [' . $user_settings['unread_mentions'] . ']' : ''),
-        'href' => $scripturl . '?action=profile;area=mentions',
-        'show' => true,
-    );
-    $menu_buttons['profile']['title'] .=  (!empty($user_settings['unread_mentions']) ? ' [' . $user_settings['unread_mentions'] . ']' : '');
+	$menu_buttons['profile']['sub_buttons']['mentions'] = array(
+		'title' => $txt['mentions'] . (!empty($user_settings['unread_mentions']) ? ' [' . $user_settings['unread_mentions'] . ']' : ''),
+		'href' => $scripturl . '?action=profile;area=mentions',
+		'show' => true,
+	);
+	$menu_buttons['profile']['title'] .=  (!empty($user_settings['unread_mentions']) ? ' [' . $user_settings['unread_mentions'] . ']' : '');
 }
 
 /**
@@ -53,20 +53,20 @@ function mentions_menu(array &$menu_buttons)
  */
 function mentions_profile_areas(array &$profile_areas)
 {
-    global $txt;
+	global $txt;
 
-    loadLanguage('Mentions');
+	loadLanguage('Mentions');
 
-    $profile_areas['info']['areas']['mentions'] = array(
-        'label' => $txt['mentions'],
-        'enabled' => true,
-        'file' => 'Mentions.php',
-        'function' => 'Mentions_Profile',
-        'permission' => array(
-            'own' => 'profile_view_own',
-            'any' => 'profile_identity_any',
-        ),
-    );
+	$profile_areas['info']['areas']['mentions'] = array(
+		'label' => $txt['mentions'],
+		'enabled' => true,
+		'file' => 'Mentions.php',
+		'function' => 'Mentions_Profile',
+		'permission' => array(
+			'own' => 'profile_view_own',
+			'any' => 'profile_identity_any',
+		),
+	);
 }
 
 /**
@@ -81,9 +81,9 @@ function mentions_profile_areas(array &$profile_areas)
  */
 function mentions_permissions(array &$permissionGroups, array &$permissionList, array &$leftPermissionGroups, array &$hiddenPermissions, array &$relabelPermissions)
 {
-    loadLanguage('Mentions');
+	loadLanguage('Mentions');
 
-    $permissionList['membergroup']['mention_member'] = array(false, 'general', 'view_basic_info');
+	$permissionList['membergroup']['mention_member'] = array(false, 'general', 'view_basic_info');
 }
 
 /**
@@ -112,91 +112,91 @@ function mentions_permissions(array &$permissionGroups, array &$permissionList, 
  */
 function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 {
-    global $smcFunc, $user_info;
+	global $smcFunc, $user_info;
 
-    // Undo some of the preparse code action
-    $body = preg_replace('~<br\s*/?\>~', "\n", str_replace('&nbsp;', ' ', $msgOptions['body']));
+	// Undo some of the preparse code action
+	$body = preg_replace('~<br\s*/?\>~', "\n", str_replace('&nbsp;', ' ', $msgOptions['body']));
 
-    // Attempt to match all the @<username> type mentions in the post
-    preg_match_all('/@(([^@\n\\\\]|\\\@){1,60})/', strip_tags($body), $matches);
+	// Attempt to match all the @<username> type mentions in the post
+	preg_match_all('/@(([^@\n\\\\]|\\\@){1,60})/', strip_tags($body), $matches);
 
-    // Names can have spaces, or they can't...we try to match every possible
-    if (empty($matches[1]) || !allowedTo('mention_member'))
-        return;
+	// Names can have spaces, or they can't...we try to match every possible
+	if (empty($matches[1]) || !allowedTo('mention_member'))
+		return;
 
-    // Names can have spaces, other breaks, or they can't...we try to match every possible
-    // combination.
-    $names = array();
-    foreach ($matches[1] as $match)
-    {
-        $match = preg_split('/([^\w])/', $match, -1, PREG_SPLIT_DELIM_CAPTURE);
+	// Names can have spaces, other breaks, or they can't...we try to match every possible
+	// combination.
+	$names = array();
+	foreach ($matches[1] as $match)
+	{
+		$match = preg_split('/([^\w])/', $match, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        for ($i = 1; $i <= count($match); $i++)
-            $names[] = str_replace('\@', '@', implode('', array_slice($match, 0, $i)));
-    }
+		for ($i = 1; $i <= count($match); $i++)
+			$names[] = str_replace('\@', '@', implode('', array_slice($match, 0, $i)));
+	}
 
-    $names = array_unique(array_map('trim', $names));
+	$names = array_unique(array_map('trim', $names));
 
-    // Get the membergroups this message can be seen by
-    $request = $smcFunc['db_query']('', '
-        SELECT b.member_groups
-        FROM {db_prefix}boards AS b
-        WHERE id_board = {int:board}',
-        array(
-            'board' => $topicOptions['board'],
-        )
-    );
-    list ($member_groups) = $smcFunc['db_fetch_row']($request);
-    $smcFunc['db_free_result']($request);
-    $member_groups = explode(',', $member_groups);
-    foreach ($member_groups as $k => $group)
-        // Dunno why
-        if (strlen($group) == 0)
-            unset($member_groups[$k]);
+	// Get the membergroups this message can be seen by
+	$request = $smcFunc['db_query']('', '
+		SELECT b.member_groups
+		FROM {db_prefix}boards AS b
+		WHERE id_board = {int:board}',
+		array(
+			'board' => $topicOptions['board'],
+		)
+	);
+	list ($member_groups) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+	$member_groups = explode(',', $member_groups);
+	foreach ($member_groups as $k => $group)
+		// Dunno why
+		if (strlen($group) == 0)
+			unset($member_groups[$k]);
 
-    // Attempt to fetch all the valid usernames along with their required metadata
-    $request = $smcFunc['db_query']('', '
-        SELECT id_member, real_name, email_mentions, email_address, unread_mentions, id_group, id_post_group, additional_groups
-        FROM {db_prefix}members
-        WHERE real_name IN ({array_string:names})
-        ORDER BY LENGTH(real_name) DESC
-        LIMIT {int:count}',
-        array(
-            'names' => $names,
-            'count' => count($names),
-        )
-    );
-    $members = array();
-    while ($row = $smcFunc['db_fetch_assoc']($request))
-        $members[$row['id_member']] = array(
-            'id' => $row['id_member'],
-            'real_name' => str_replace('@', '\@', $row['real_name']),
-            'original_name' => $row['real_name'],
-            'email_mentions' => $row['email_mentions'],
-            'email_address' => $row['email_address'],
-            'unread_mentions' => $row['unread_mentions'],
-            'groups' => array_unique(array_merge(array($row['id_group'], $row['id_post_group']), explode(',', $row['additional_groups']))),
-        );
-    $smcFunc['db_free_result']($request);
-    if (empty($members))
-        return;
+	// Attempt to fetch all the valid usernames along with their required metadata
+	$request = $smcFunc['db_query']('', '
+		SELECT id_member, real_name, email_mentions, email_address, unread_mentions, id_group, id_post_group, additional_groups
+		FROM {db_prefix}members
+		WHERE real_name IN ({array_string:names})
+		ORDER BY LENGTH(real_name) DESC
+		LIMIT {int:count}',
+		array(
+			'names' => $names,
+			'count' => count($names),
+		)
+	);
+	$members = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$members[$row['id_member']] = array(
+			'id' => $row['id_member'],
+			'real_name' => str_replace('@', '\@', $row['real_name']),
+			'original_name' => $row['real_name'],
+			'email_mentions' => $row['email_mentions'],
+			'email_address' => $row['email_address'],
+			'unread_mentions' => $row['unread_mentions'],
+			'groups' => array_unique(array_merge(array($row['id_group'], $row['id_post_group']), explode(',', $row['additional_groups']))),
+		);
+	$smcFunc['db_free_result']($request);
+	if (empty($members))
+		return;
 
-    // Replace all the tags with BBCode ([member=<id>]<username>[/member])
-    $msgOptions['mentions'] = array();
-    foreach ($members as $member)
-    {
-        if (strpos($msgOptions['body'], '@' . $member['real_name']) === false
-            || (!in_array(1, $member['groups']) && count(array_intersect($member['groups'], $member_groups)) == 0))
-            continue;
+	// Replace all the tags with BBCode ([member=<id>]<username>[/member])
+	$msgOptions['mentions'] = array();
+	foreach ($members as $member)
+	{
+		if (strpos($msgOptions['body'], '@' . $member['real_name']) === false
+			|| (!in_array(1, $member['groups']) && count(array_intersect($member['groups'], $member_groups)) == 0))
+			continue;
 
-        $msgOptions['body'] = str_replace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['original_name'] . '[/member]', $msgOptions['body']);
+		$msgOptions['body'] = str_replace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['original_name'] . '[/member]', $msgOptions['body']);
 
-        // Why would an idiot mention themselves?
-        if ($user_info['id'] == $member['id'])
-            continue;
+		// Why would an idiot mention themselves?
+		if ($user_info['id'] == $member['id'])
+			continue;
 
-        $msgOptions['mentions'][] = $member;
-    }
+		$msgOptions['mentions'][] = $member;
+	}
 }
 
 /**
@@ -209,36 +209,36 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
  */
 function mentions_process_store(array $mentions, $id_post, $subject)
 {
-    global $smcFunc, $txt, $user_info, $scripturl;
+	global $smcFunc, $txt, $user_info, $scripturl;
 
-    foreach ($mentions as $mention)
-    {
-        // Store this quickly
-        $smcFunc['db_insert']('replace',
-            '{db_prefix}log_mentions',
-            array('id_post' => 'int', 'id_member' => 'int', 'id_mentioned' => 'int', 'time' => 'int'),
-            array($id_post, $user_info['id'], $mention['id'], time()),
-            array('id_post', 'id_member', 'id_mentioned')
-        );
+	foreach ($mentions as $mention)
+	{
+		// Store this quickly
+		$smcFunc['db_insert']('replace',
+			'{db_prefix}log_mentions',
+			array('id_post' => 'int', 'id_member' => 'int', 'id_mentioned' => 'int', 'time' => 'int'),
+			array($id_post, $user_info['id'], $mention['id'], time()),
+			array('id_post', 'id_member', 'id_mentioned')
+		);
 
-        if (!empty($mention['email_mentions']))
-        {
-            $replacements = array(
-                'POSTNAME' => $subject,
-                'MENTIONNAME' => $mention['original_name'],
-                'MEMBERNAME' => $user_info['name'],
-                'POSTLINK' => $scripturl . '?post=' . $id_post,
-            );
+		if (!empty($mention['email_mentions']))
+		{
+			$replacements = array(
+				'POSTNAME' => $subject,
+				'MENTIONNAME' => $mention['original_name'],
+				'MEMBERNAME' => $user_info['name'],
+				'POSTLINK' => $scripturl . '?post=' . $id_post,
+			);
 
-            loadLanguage('Mentions');
+			loadLanguage('Mentions');
 
-            $subject = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_subject']);
-            $body = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_body']);
-            sendmail($mention['email_address'], $subject, $body);
-        }
+			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_subject']);
+			$body = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_body']);
+			sendmail($mention['email_address'], $subject, $body);
+		}
 
-        updateMemberData($mention['id'], array('unread_mentions' => $mention['unread_mentions'] + 1));
-    }
+		updateMemberData($mention['id'], array('unread_mentions' => $mention['unread_mentions'] + 1));
+	}
 }
 
 /**
@@ -249,171 +249,171 @@ function mentions_process_store(array $mentions, $id_post, $subject)
  */
 function Mentions_Profile($memID)
 {
-    global $smcFunc, $sourcedir, $txt, $context, $modSettings, $user_info, $scripturl;
+	global $smcFunc, $sourcedir, $txt, $context, $modSettings, $user_info, $scripturl;
 
-    loadLanguage('Mentions');
+	loadLanguage('Mentions');
 
-    if (!empty($_POST['save']) && $user_info['id'] == $memID)
-        updateMemberData($memID, array('email_mentions' => (bool) !empty($_POST['email_mentions'])));
+	if (!empty($_POST['save']) && $user_info['id'] == $memID)
+		updateMemberData($memID, array('email_mentions' => (bool) !empty($_POST['email_mentions'])));
 
-    if ($memID == $user_info['id'])
-    {
-        $smcFunc['db_query']('', '
-            UPDATE {db_prefix}log_mentions
-            SET unseen = 0
-            WHERE id_mentioned = {int:member}',
-            array(
-                'member' => $user_info['id'],
-            )
-        );
-        updateMemberData($user_info['id'], array('unread_mentions' => 0));
-    }
+	if ($memID == $user_info['id'])
+	{
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}log_mentions
+			SET unseen = 0
+			WHERE id_mentioned = {int:member}',
+			array(
+				'member' => $user_info['id'],
+			)
+		);
+		updateMemberData($user_info['id'], array('unread_mentions' => 0));
+	}
 
-    $request = $smcFunc['db_query']('', '
-        SELECT emaiL_mentions
-        FROM {db_prefix}members
-        WHERE id_member = {int:member}',
-        array(
-            'member' => $memID,
-        )
-    );
-    list ($email_mentions) = $smcFunc['db_fetch_row']($request);
-    $smcFunc['db_free_result'];
+	$request = $smcFunc['db_query']('', '
+		SELECT emaiL_mentions
+		FROM {db_prefix}members
+		WHERE id_member = {int:member}',
+		array(
+			'member' => $memID,
+		)
+	);
+	list ($email_mentions) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result'];
 
-    // Set the options for the list component.
-    $listOptions = array(
-        'id' => 'mentions_list',
-        'title' => substr($txt['mentions_profile_title'], $user_info['name']),
-        'items_per_page' => 20,
-        'base_href' => $scripturl . '?action=profile;area=tracking;sa=user;u=' . $memID,
-        'default_sort_col' => 'time',
-        'get_items' => array(
-            'function' => 'list_getMentions',
-            'params' => array(
-                'lm.id_mentioned = {int:current_member}',
-                array('current_member' => $memID),
-            ),
-        ),
-        'get_count' => array(
-            'function' => 'list_getMentionsCount',
-            'params' => array(
-                'lm.id_mentioned = {int:current_member}',
-                array('current_member' => $memID),
-            ),
-        ),
-        'columns' => array(
-            'subject' => array(
-                'header' => array(
-                    'value' => $txt['mentions_post_subject'],
-                ),
-                'data' => array(
-                    'sprintf' => array(
-                        'format' => '<a href="' . $scripturl . '?msg=%d">%s</a>',
-                        'params' => array(
-                            'id_post' => false,
-                            'subject' => false,
-                        ),
-                    ),
-                ),
-                'sort' => array(
-                    'default' => 'msg.subject DESC',
-                    'reverse' => 'msg.subject ASC',
-                ),
-            ),
-            'by' => array(
-                'header' => array(
-                    'value' => $txt['mentions_member'],
-                ),
-                'data' => array(
-                    'sprintf' => array(
-                        'format' => '<a href="' . $scripturl . '?action=profile;u=%d">%s</a>',
-                        'params' => array(
-                            'id_member' => false,
-                            'real_name' => false,
-                        ),
-                    ),
-                ),
-            ),
-            'time' => array(
-                'header' => array(
-                    'value' => $txt['mentions_post_time'],
-                ),
-                'data' => array(
-                    'db' => 'time',
-                ),
-                'sort' => array(
-                    'default' => 'lm.time DESC',
-                    'reverse' => 'lm.time ASC',
-                ),
-            ),
-        ),
-        'form' => array(
-            'href' => $scripturl . '?action=profile;area=mentions',
-            'include_sort' => true,
-            'include_start' => true,
-            'hidden_fields' => array(
-                'save' => true,
-            ),
-        ),
-        'additional_rows' => array(
-            array(
-                'position' => 'bottom_of_list',
-                'value' => '<label for="email_mentions">' . $txt['email_mentions'] . ':</label> <input type="checkbox" name="email_mentions" value="1" onchange="this.form.submit()"' . ($email_mentions ? ' checked' : '') . ' />',
-            ),
-        ),
-    );
+	// Set the options for the list component.
+	$listOptions = array(
+		'id' => 'mentions_list',
+		'title' => substr($txt['mentions_profile_title'], $user_info['name']),
+		'items_per_page' => 20,
+		'base_href' => $scripturl . '?action=profile;area=tracking;sa=user;u=' . $memID,
+		'default_sort_col' => 'time',
+		'get_items' => array(
+			'function' => 'list_getMentions',
+			'params' => array(
+				'lm.id_mentioned = {int:current_member}',
+				array('current_member' => $memID),
+			),
+		),
+		'get_count' => array(
+			'function' => 'list_getMentionsCount',
+			'params' => array(
+				'lm.id_mentioned = {int:current_member}',
+				array('current_member' => $memID),
+			),
+		),
+		'columns' => array(
+			'subject' => array(
+				'header' => array(
+					'value' => $txt['mentions_post_subject'],
+				),
+				'data' => array(
+					'sprintf' => array(
+						'format' => '<a href="' . $scripturl . '?msg=%d">%s</a>',
+						'params' => array(
+							'id_post' => false,
+							'subject' => false,
+						),
+					),
+				),
+				'sort' => array(
+					'default' => 'msg.subject DESC',
+					'reverse' => 'msg.subject ASC',
+				),
+			),
+			'by' => array(
+				'header' => array(
+					'value' => $txt['mentions_member'],
+				),
+				'data' => array(
+					'sprintf' => array(
+						'format' => '<a href="' . $scripturl . '?action=profile;u=%d">%s</a>',
+						'params' => array(
+							'id_member' => false,
+							'real_name' => false,
+						),
+					),
+				),
+			),
+			'time' => array(
+				'header' => array(
+					'value' => $txt['mentions_post_time'],
+				),
+				'data' => array(
+					'db' => 'time',
+				),
+				'sort' => array(
+					'default' => 'lm.time DESC',
+					'reverse' => 'lm.time ASC',
+				),
+			),
+		),
+		'form' => array(
+			'href' => $scripturl . '?action=profile;area=mentions',
+			'include_sort' => true,
+			'include_start' => true,
+			'hidden_fields' => array(
+				'save' => true,
+			),
+		),
+		'additional_rows' => array(
+			array(
+				'position' => 'bottom_of_list',
+				'value' => '<label for="email_mentions">' . $txt['email_mentions'] . ':</label> <input type="checkbox" name="email_mentions" value="1" onchange="this.form.submit()"' . ($email_mentions ? ' checked' : '') . ' />',
+			),
+		),
+	);
 
-    // Create the list for viewing.
-    require_once($sourcedir . '/Subs-List.php');
-    createList($listOptions);
+	// Create the list for viewing.
+	require_once($sourcedir . '/Subs-List.php');
+	createList($listOptions);
 
-    $context['default_list'] = 'mentions_list';
-    $context['sub_template'] = 'show_list';
+	$context['default_list'] = 'mentions_list';
+	$context['sub_template'] = 'show_list';
 }
 
 function list_getMentionsCount($where, $where_vars = array())
 {
-    global $smcFunc;
+	global $smcFunc;
 
-    $request = $smcFunc['db_query']('', '
+	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(lm.id_mentioned) AS mentions_count
 		FROM {db_prefix}log_mentions AS lm
 		WHERE ' . $where,
-        $where_vars
-    );
-    list ($count) = $smcFunc['db_fetch_row']($request);
-    $smcFunc['db_free_result']($request);
+		$where_vars
+	);
+	list ($count) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
 
-    return $count;
+	return $count;
 }
 
 function list_getMentions($start, $items_per_page, $sort, $where, $where_vars = array())
 {
-    global $smcFunc, $txt, $scripturl;
+	global $smcFunc, $txt, $scripturl;
 
-    // Get a list of error messages from this ip (range).
-    $request = $smcFunc['db_query']('', '
+	// Get a list of error messages from this ip (range).
+	$request = $smcFunc['db_query']('', '
 		SELECT
 			lm.id_post, lm.id_mentioned, lm.id_member, lm.time,
 			mem.real_name, msg.subject
-        FROM {db_prefix}log_mentions AS lm
-            INNER JOIN {db_prefix}members AS mem ON (mem.id_member = lm.id_member)
-            INNER JOIN {db_prefix}messages AS msg ON (msg.id_msg = lm.id_post)
-            INNER JOIN {db_prefix}topics AS t ON (t.id_topic = msg.id_topic)
-            INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
+		FROM {db_prefix}log_mentions AS lm
+			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = lm.id_member)
+			INNER JOIN {db_prefix}messages AS msg ON (msg.id_msg = lm.id_post)
+			INNER JOIN {db_prefix}topics AS t ON (t.id_topic = msg.id_topic)
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 		WHERE ' . $where . '
-		    AND {query_see_board}
+			AND {query_see_board}
 		ORDER BY ' . $sort . '
 		LIMIT ' . $start . ', ' . $items_per_page,
-        $where_vars
-    );
-    $mentions = array();
-    while ($row = $smcFunc['db_fetch_assoc']($request))
-    {
-        $row['time'] = timeformat($row['time']);
-        $mentions[] = $row;
-    }
-    $smcFunc['db_free_result']($request);
+		$where_vars
+	);
+	$mentions = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$row['time'] = timeformat($row['time']);
+		$mentions[] = $row;
+	}
+	$smcFunc['db_free_result']($request);
 
-    return $mentions;
+	return $mentions;
 }
