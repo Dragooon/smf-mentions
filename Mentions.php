@@ -279,8 +279,6 @@ function mentions_process_approved(array $msgs)
 				'POSTLINK' => $scripturl . '?msg=' . $row['id_msg'],
 			);
 
-			loadLanguage('Mentions');
-
 			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_subject']);
 			$body = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_body']);
 			sendmail($row['email_address'], $subject, $body);
