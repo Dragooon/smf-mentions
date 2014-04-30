@@ -38,6 +38,26 @@
 
 ]]></add>
 		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
+{
+    global $user_info, $modSettings, $smcFunc, $context;]]></search>
+			<add><![CDATA[function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
+{
+	global $user_info, $modSettings, $smcFunc, $context, $sourcedir;]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[	// Change the post.]]></search>
+			<add><![CDATA[
+	require_once($sourcedir . '/Mentions.php');
+	mentions_process_post($msgOptions, $topicOptions, $posterOptions);
+	if (!empty($msgOptions['mentions']))
+		mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject'], $msgOptions['approved']);
+]]></add>
+		</operation>
+
 	</file>
 
 </modification>
