@@ -14,7 +14,8 @@ $txt['mentions_body'] = 'Hello MENTIONNAME!
 
 MEMBERNAME mentioned you in the post "POSTNAME", you can view the post at POSTLINK
 
-Regards';
+Regards,
+' . $context['forum_name'];
 $txt['mentions'] = 'Mentions';
 $txt['mentions_profile_title'] = 'Posts mentioning %s';
 $txt['mentions_post_subject'] = 'Subject';

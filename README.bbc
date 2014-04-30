@@ -5,7 +5,7 @@ Source: http://github.com/Dragooon/smf-mentions[/center]
 
 [b]About[/b]
 [hr]
-Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membeergroups to be granted permission to mention others
+Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membergroups to be granted permission to mention others
 
 [b]To Do:[/b]
 [hr]
