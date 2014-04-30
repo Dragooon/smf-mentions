@@ -283,7 +283,7 @@ function Mentions_Profile($memID)
 	// Set the options for the list component.
 	$listOptions = array(
 		'id' => 'mentions_list',
-		'title' => substr($txt['mentions_profile_title'], $user_info['name']),
+		'title' => sprintf($txt['mentions_profile_title'], $context['member']['name']),
 		'items_per_page' => 20,
 		'base_href' => $scripturl . '?action=profile;area=tracking;sa=user;u=' . $memID,
 		'default_sort_col' => 'time',

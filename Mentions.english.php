@@ -16,7 +16,7 @@ MEMBERNAME mentioned you in the post "POSTNAME", you can view the post at POSTLI
 
 Regards';
 $txt['mentions'] = 'Mentions';
-$txt['mentions_profile_title'] = 'Posts mentioning the user';
+$txt['mentions_profile_title'] = 'Posts mentioning %s';
 $txt['mentions_post_subject'] = 'Subject';
 $txt['mentions_member'] = 'Mentioned By';
 $txt['mentions_post_time'] = 'Mentioned Time';
