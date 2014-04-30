@@ -24,7 +24,17 @@
 			<search position="after"><![CDATA[
 	// Success.]]></search>
 			<add><![CDATA[
-	mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject']);
+	if (!empty($msgOptions['mentions']))
+		mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject'], $msgOptions['approved']);
+
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[	// Post count for the members?]]></search>
+			<add><![CDATA[
+	require_once($sourcedir . '/Mentions.php');
+	mentions_process_approved($msgs);
 
 ]]></add>
 		</operation>

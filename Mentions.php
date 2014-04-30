@@ -205,9 +205,10 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
  * @param array $mentions
  * @param int $id_post
  * @param string $subject
+ * @param bool $approved
  * @return void
  */
-function mentions_process_store(array $mentions, $id_post, $subject)
+function mentions_process_store(array $mentions, $id_post, $subject, $approved = true)
 {
 	global $smcFunc, $txt, $user_info, $scripturl;
 
@@ -221,13 +222,13 @@ function mentions_process_store(array $mentions, $id_post, $subject)
 			array('id_post', 'id_member', 'id_mentioned')
 		);
 
-		if (!empty($mention['email_mentions']))
+		if (!empty($mention['email_mentions']) && $approved)
 		{
 			$replacements = array(
 				'POSTNAME' => $subject,
 				'MENTIONNAME' => $mention['original_name'],
 				'MEMBERNAME' => $user_info['name'],
-				'POSTLINK' => $scripturl . '?post=' . $id_post,
+				'POSTLINK' => $scripturl . '?msg=' . $id_post,
 			);
 
 			loadLanguage('Mentions');
@@ -237,8 +238,58 @@ function mentions_process_store(array $mentions, $id_post, $subject)
 			sendmail($mention['email_address'], $subject, $body);
 		}
 
-		updateMemberData($mention['id'], array('unread_mentions' => $mention['unread_mentions'] + 1));
+		if ($approved)
+			updateMemberData($mention['id'], array('unread_mentions' => $mention['unread_mentions'] + 1));
 	}
+}
+
+/**
+ * Handles approved post's mentions, mostly handles notifications
+ *
+ * @param array $msgs
+ * @return void
+ */
+function mentions_process_approved(array $msgs)
+{
+	global $smcFunc, $txt, $scripturl, $txt;
+
+	loadLanguage('Mentions');
+
+	// Grab the appropriate mentions
+	$request = $smcFunc['db_query']('', '
+		SELECT msg.id_msg, msg.subject, mem.real_name, ment.real_name AS mentioned_name,
+			ment.email_mentions, ment.email_address, ment.unread_mentions, ment.id_member
+		FROM {db_prefix}log_mentions AS lm
+		  INNER JOIN {db_prefix}messages AS msg ON (msg.id_msg = lm.id_post)
+		  INNER JOIN {db_prefix}members AS mem ON (lm.id_member = mem.id_member)
+		  INNER JOIN {db_prefix}members AS ment ON (lm.id_mentioned = ment.id_member)
+		WHERE lm.id_post IN ({array_int:messages})',
+		array(
+			'messages' => $msgs,
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		if (!empty($row['email_mentions']))
+		{
+			$replacements = array(
+				'POSTNAME' => $row['subject'],
+				'MENTIONNAME' => $row['mentioned_name'],
+				'MEMBERNAME' => $row['real_name'],
+				'POSTLINK' => $scripturl . '?msg=' . $row['id_msg'],
+			);
+
+			loadLanguage('Mentions');
+
+			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_subject']);
+			$body = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_body']);
+			sendmail($row['email_address'], $subject, $body);
+		}
+
+		updateMemberData($row['id_member'], array('unread_mentions' => $row['unread_mentions'] + 1));
+	}
+
+	$smcFunc['db_free_result']($request);
 }
 
 /**
@@ -403,6 +454,7 @@ function list_getMentions($start, $items_per_page, $sort, $where, $where_vars = 
 			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 		WHERE ' . $where . '
 			AND {query_see_board}
+			AND msg.approved = 1
 		ORDER BY ' . $sort . '
 		LIMIT ' . $start . ', ' . $items_per_page,
 		$where_vars
