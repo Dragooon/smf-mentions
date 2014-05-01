@@ -12,7 +12,8 @@
 		<modification>install.xml</modification>
 		<require-file name="Mentions.php" destination="$sourcedir" />
 		<require-file name="Mentions.english.php" destination="$themedir/languages" />
-	</install>
+        <redirect url="?action=admin;area=permissions" type="inline">Redirecting to the permissions page, please grant the appropriate membergroups permissions to mention other members</redirect>
+    </install>
 
 	<uninstall for="2.0 - 2.0.99">
 		<code>remove_hooks.php</code>
