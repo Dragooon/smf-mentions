@@ -42,10 +42,10 @@
 		<operation>
 			<search position="replace"><![CDATA[function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
 {
-    global $user_info, $modSettings, $smcFunc, $context;]]></search>
+	global $user_info, $modSettings, $smcFunc, $context;]]></search>
 			<add><![CDATA[function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
 {
-    global $user_info, $modSettings, $smcFunc, $context, $sourcedir;]]></add>
+	global $user_info, $modSettings, $smcFunc, $context, $sourcedir;]]></add>
 		</operation>
 
 		<operation>
