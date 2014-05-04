@@ -5,18 +5,12 @@
 	<name>@mention members</name>
 
 	<file name="$sourcedir/Subs-Post.php">
-		<operation>
-			<search position="before"><![CDATA[	global $user_info, $txt, $modSettings, $smcFunc, $context]]></search>
-			<add><![CDATA[, $sourcedir]]></add>
-		</operation>
 
 		<operation>
 			<search position="after"><![CDATA[
 	// It's do or die time: forget any user aborts!]]></search>
 			<add><![CDATA[
-	require_once($sourcedir . '/Mentions.php');
 	mentions_process_post($msgOptions, $topicOptions, $posterOptions);
-
 ]]></add>
 		</operation>
 
@@ -33,25 +27,13 @@
 		<operation>
 			<search position="after"><![CDATA[	// Post count for the members?]]></search>
 			<add><![CDATA[
-	require_once($sourcedir . '/Mentions.php');
 	mentions_process_approved($msgs);
-
 ]]></add>
-		</operation>
-
-		<operation>
-			<search position="replace"><![CDATA[function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
-{
-	global $user_info, $modSettings, $smcFunc, $context;]]></search>
-			<add><![CDATA[function modifyPost(&$msgOptions, &$topicOptions, &$posterOptions)
-{
-	global $user_info, $modSettings, $smcFunc, $context, $sourcedir;]]></add>
 		</operation>
 
 		<operation>
 			<search position="after"><![CDATA[	// Change the post.]]></search>
 			<add><![CDATA[
-	require_once($sourcedir . '/Mentions.php');
 	mentions_process_post($msgOptions, $topicOptions, $posterOptions);
 	if (!empty($msgOptions['mentions']))
 		mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject'], $msgOptions['approved']);
@@ -61,21 +43,25 @@
 	</file>
 
 	<file name="$sourcedir/Display.php">
+
 		<operation>
 			<search position="after"><![CDATA[	// What are you gonna display if these are empty?!]]></search>
 			<add><![CDATA[
 	mentions_post_scripts();
 ]]></add>
 		</operation>
+        
 	</file>
 
 	<file name="$sourcedir/Post.php">
+
 		<operation>
 			<search position="after"><![CDATA[	// You can't reply with a poll... hacker.]]></search>
 			<add><![CDATA[
 	mentions_post_scripts();
 ]]></add>
 		</operation>
+
 	</file>
 
 </modification>
