@@ -6,3 +6,10 @@ Source: http://github.com/Dragooon/smf-mentions[/center]
 [b]About[/b]
 [hr]
 Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membergroups to be granted permission to mention others
+
+[b]Third party libraries[/b]
+[hr]
+[list]
+[li][url=https://github.com/ichord/Caret.js][b]Caret.js[/b][/url]: Library for handling caret position, and offset relative to the document. Licensed under the MIT license[/li]
+[li][url=https://github.com/ichord/At.js][b]At.js[/b][/url]: Autocomplete library for handling mentions, emoticons etc. Licensed under the MIT license[/li]
+[/list]
