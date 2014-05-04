@@ -320,7 +320,7 @@ function mentions_post_scripts()
  */
 function scheduled_removeMentions()
 {
-	global $modSettings;
+	global $modSettings, $smcFunc;
 
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}log_mentions
