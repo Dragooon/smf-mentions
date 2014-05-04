@@ -41,3 +41,22 @@ $hooks = array(
 
 foreach ($hooks as $hook => $function)
 	add_integration_function($hook, $function);
+
+$request = $smcFunc['db_query']('', '
+	SELECT id_task FROM {db_prefix}scheduled_tasks WHERE task = {string:task}',
+	array(
+		'task' => 'removeMentions',
+	)
+);
+if ($smcFunc['db_num_rows']($request) == 0)
+	$smcFunc['db_insert']('{db_prefix}scheduled_tasks',
+		array(
+			'next_time' => 'int', 'time_offset' => 'int', 'time_regularity' => 'int',
+			'time_unit' => 'string-1', 'disabled' => 'int', 'task' => 'string',
+		),
+		array(
+			0, 0, 1, 'd', 1, 'removeMentions',
+		),
+		array('id_task')
+	);
+$smcFunc['db_free_result']($request);

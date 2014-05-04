@@ -314,6 +314,25 @@ function mentions_post_scripts()
 }
 
 /**
+ * Scheduled task for removing mentions older than x days
+ *
+ * @return void
+ */
+function scheduled_removeMentions()
+{
+	global $modSettings;
+
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}log_mentions
+		WHERE time < {int:time}
+		  AND unseen = 0',
+		array(
+			'time' => time() - ((!empty($modSettings['mentions_remove_days']) ? $modSettings['mentions_remove_days'] : 0) * 86400),
+		)
+	);
+}
+
+/**
  * Handles the profile area for mentions
  *
  * @param int $memID
