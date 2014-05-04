@@ -185,11 +185,11 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 	$msgOptions['mentions'] = array();
 	foreach ($members as $member)
 	{
-		if (strpos($msgOptions['body'], '@' . $member['real_name']) === false
+		if (stripos($msgOptions['body'], '@' . $member['real_name']) === false
 			|| (!in_array(1, $member['groups']) && count(array_intersect($member['groups'], $member_groups)) == 0))
 			continue;
 
-		$msgOptions['body'] = str_replace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['original_name'] . '[/member]', $msgOptions['body']);
+		$msgOptions['body'] = str_ireplace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['original_name'] . '[/member]', $msgOptions['body']);
 
 		// Why would an idiot mention themselves?
 		if ($user_info['id'] == $member['id'])
