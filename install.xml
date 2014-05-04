@@ -62,7 +62,7 @@
 
 	<file name="$sourcedir/Display.php">
 		<operation>
-			<search position="after">![CDATA[	// What are you gonna display if these are empty?!]]></search>
+			<search position="after"><![CDATA[	// What are you gonna display if these are empty?!]]></search>
 			<add><![CDATA[
 	mentions_post_scripts();
 ]]></add>
