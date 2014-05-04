@@ -291,6 +291,29 @@ function mentions_process_approved(array $msgs)
 }
 
 /**
+ * JS for mentions while posting
+ *
+ * @return void
+ */
+function mentions_post_scripts()
+{
+	global $settings, $context;
+
+	if (!allowedTo('mention_member'))
+		return;
+
+	$context['html_headers'] .= '
+		<script type="text/javascript">
+			var jquery_url = "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js";
+			var atwho_url = "' . $settings['default_theme_url'] . '/scripts/jquery.atwho.js";
+			var smf_sessid = "' . $context['session_id'] . '";
+			var smf_sessvar = "' . $context['session_var'] . '";
+		</script>
+		<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/mentions.js"></script>
+		<link rel="stylesheet" type="text/css" href="' . (file_exists($settings['theme_dir'] . '/css/mentions.css') ? $settings['theme_url'] : $settings['default_theme_url']) . '/css/mentions.css" />';
+}
+
+/**
  * Handles the profile area for mentions
  *
  * @param int $memID

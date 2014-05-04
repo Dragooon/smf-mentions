@@ -10,8 +10,8 @@
 		<readme parsebbc="true">README.bbc</readme>
 		<database>db_mentions.php</database>
 		<modification>install.xml</modification>
-		<require-file name="Sources" destination="$sourcedir" />
-		<require-file name="Themes" destination="$themedir" />
+		<require-dir name="Sources" destination="$boarddir" />
+		<require-dir name="Themes" destination="$boarddir" />
         <redirect url="?action=admin;area=permissions" type="inline">Redirecting to the permissions page, please grant the appropriate membergroups permissions to mention other members</redirect>
     </install>
 

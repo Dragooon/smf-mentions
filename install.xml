@@ -60,4 +60,22 @@
 
 	</file>
 
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after">![CDATA[	// What are you gonna display if these are empty?!]]></search>
+			<add><![CDATA[
+	mentions_post_scripts();
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="after"><![CDATA[	// You can't reply with a poll... hacker.]]></search>
+			<add><![CDATA[
+	mentions_post_scripts();
+]]></add>
+		</operation>
+	</file>
+
 </modification>
