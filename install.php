@@ -49,10 +49,11 @@ $request = $smcFunc['db_query']('', '
 	)
 );
 if ($smcFunc['db_num_rows']($request) == 0)
-	$smcFunc['db_insert']('{db_prefix}scheduled_tasks',
+	$smcFunc['db_insert']('replace',
+		'{db_prefix}scheduled_tasks',
 		array(
 			'next_time' => 'int', 'time_offset' => 'int', 'time_regularity' => 'int',
-			'time_unit' => 'string-1', 'disabled' => 'int', 'task' => 'string',
+			'time_unit' => 'string', 'disabled' => 'int', 'task' => 'string',
 		),
 		array(
 			0, 0, 1, 'd', 1, 'removeMentions',

@@ -24,5 +24,3 @@ $txt['mentions_post_time'] = 'Mentioned Time';
 $txt['permissionname_mention_member'] = 'Mention members';
 $txt['permissionhelp_mention_member'] = 'Allow members to tag other members and alert them via mentioning them via @username syntax';
 $txt['email_mentions'] = 'E-mail mention notifications';
-$txt['scheduled_task_removeMentions'] = 'Remove seen mentions';
-$txt['scheduled_task_desc_removeMentions'] = 'Automatically removes seen mentions older than the specified days';

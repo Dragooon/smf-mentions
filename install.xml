@@ -50,7 +50,7 @@
 	mentions_post_scripts();
 ]]></add>
 		</operation>
-        
+
 	</file>
 
 	<file name="$sourcedir/Post.php">
@@ -59,6 +59,18 @@
 			<search position="after"><![CDATA[	// You can't reply with a poll... hacker.]]></search>
 			<add><![CDATA[
 	mentions_post_scripts();
+]]></add>
+		</operation>
+
+	</file>
+
+	<file name="$languagedir/ManageScheduledTasks.english.php">
+
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['scheduled_task_removeMentions'] = 'Remove seen mentions';
+$txt['scheduled_task_desc_removeMentions'] = 'Automatically removes seen mentions older than the specified days';
 ]]></add>
 		</operation>
 
