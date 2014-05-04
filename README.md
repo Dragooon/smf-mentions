@@ -6,8 +6,3 @@
 ## About
 
 Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membergroups to be granted permission to mention others
-
-## To Do:
-
-1. Add active dropdown while tagging members to give username suggestions
-2. Awesomeness :P
