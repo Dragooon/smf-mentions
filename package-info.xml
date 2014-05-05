@@ -10,6 +10,7 @@
 		<readme parsebbc="true">README.bbc</readme>
 		<database>install.php</database>
 		<modification>install.xml</modification>
+		<modification>install-english.xml</modification>
 		<require-dir name="Sources" destination="$boarddir" />
 		<require-dir name="Themes" destination="$boarddir" />
         <redirect url="?action=admin;area=permissions" type="inline">Redirecting to the permissions page, please grant the appropriate membergroups permissions to mention other members</redirect>
@@ -18,6 +19,7 @@
 	<uninstall for="2.0 - 2.0.99">
 		<code>uninstall.php</code>
 		<modification reverse="true">install.xml</modification>
+		<modification reverse="true">install-english.xml</modification>
 		<remove-file name="$sourcedir/Mentions.php" />
 		<remove-file name="$themedir/languages/Mentions.english.php" />
         <remove-file name="$themedir/scripts/mentions.js" />

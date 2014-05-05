@@ -64,16 +64,4 @@
 
 	</file>
 
-	<file name="$languagedir/ManageScheduledTasks.english.php">
-
-		<operation>
-			<search position="end" />
-			<add><![CDATA[
-$txt['scheduled_task_removeMentions'] = 'Remove seen mentions';
-$txt['scheduled_task_desc_removeMentions'] = 'Automatically removes seen mentions older than the specified days';
-]]></add>
-		</operation>
-
-	</file>
-
 </modification>
