@@ -5,7 +5,7 @@
 
 ## About
 
-Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membergroups to be granted permission to mention others
+Allows members to tag others via @<username>, shows up under Profile and members can set to be notified via e-mail. Adds a new permission enabling membergroups to be granted permission to mention others. Supports active suggestions while mentioning in posts as well as quick reply.
 
 ##Third party libraries
 
