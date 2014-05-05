@@ -42,6 +42,11 @@ var mentionInit = function()
 							callback(callbackArray);
 						}
 					});
+				},
+
+				before_insert: function(value, $li)
+				{
+					return '@' + value.substr(1).replace(/@/g, '\\@');
 				}
 			}
 		};
