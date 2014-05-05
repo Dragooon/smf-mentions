@@ -92,7 +92,7 @@ function mentions_permissions(array &$permissionGroups, array &$permissionList, 
  *
  * Names are tagged by "@<username>" format in post, but they can contain
  * any type of character up to 60 characters length. So we extract, starting from @
- * up to 60 characters in length (or if we encounter another @ or a line break) and make
+ * up to 60 characters in length (or if we encounter a line break) and make
  * several combination of strings after splitting it by anything that's not a word and join
  * by having the first word, first and second word, first, second and third word and so on and
  * search every name.
@@ -102,8 +102,9 @@ function mentions_permissions(array &$permissionGroups, array &$permissionList, 
  * One disadvantage of this is that we can only match by one column, hence I've chosen
  * real_name since it's the most obvious.
  *
- * Names having "@" in there names are expected to be escaped as "\@",
- * otherwise it'll break seven ways from sunday
+ * If there's an @ symbol within the name, it is counted in the ongoing string and a new
+ * combination string is started from it as well in order to account for all the possibilities.
+ * This makes the @ symbol to not be required to be escaped
  *
  * @param array &$msgOptions
  * @param array &$topicOptions
@@ -115,24 +116,48 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 	global $smcFunc, $user_info;
 
 	// Undo some of the preparse code action
-	$body = preg_replace('~<br\s*/?\>~', "\n", str_replace('&nbsp;', ' ', $msgOptions['body']));
+	$body = htmlspecialchars_decode(preg_replace('~<br\s*/?\>~', "\n", str_replace('&nbsp;', ' ', $msgOptions['body'])), ENT_QUOTES);
 
-	// Attempt to match all the @<username> type mentions in the post
-	preg_match_all('/@(([^@\n\\\\]|\\\@){1,60})/', strip_tags($body), $matches);
+	$matches = array();
+	$string = str_split($body);
+	$depth = 0;
+	foreach ($string as $char)
+	{
+		if ($char == '@')
+		{
+			$depth++;
+			$matches[] = array();
+		}
+		elseif ($char == "\n")
+			$depth = 0;
+
+		for ($i = $depth; $i > 0; $i--)
+		{
+			if (count($matches[count($matches) - $i]) > 60)
+			{
+				$depth--;
+				break;
+			}
+			$matches[count($matches) - $i][] = $char;
+		}
+	}
+
+	foreach ($matches as &$match)
+		$match = substr(implode('', $match), 1);
 
 	// Names can have spaces, or they can't...we try to match every possible
-	if (empty($matches[1]) || !allowedTo('mention_member'))
+	if (empty($matches) || !allowedTo('mention_member'))
 		return;
 
 	// Names can have spaces, other breaks, or they can't...we try to match every possible
 	// combination.
 	$names = array();
-	foreach ($matches[1] as $match)
+	foreach ($matches as $match)
 	{
 		$match = preg_split('/([^\w])/', $match, -1, PREG_SPLIT_DELIM_CAPTURE);
 
 		for ($i = 1; $i <= count($match); $i++)
-			$names[] = str_replace('\@', '@', implode('', array_slice($match, 0, $i)));
+			$names[] = implode('', array_slice($match, 0, $i));
 	}
 
 	$names = array_unique(array_map('trim', $names));
@@ -170,8 +195,7 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$members[$row['id_member']] = array(
 			'id' => $row['id_member'],
-			'real_name' => str_replace('@', '\@', $row['real_name']),
-			'original_name' => $row['real_name'],
+			'real_name' => $row['real_name'],
 			'email_mentions' => $row['email_mentions'],
 			'email_address' => $row['email_address'],
 			'unread_mentions' => $row['unread_mentions'],
@@ -189,7 +213,7 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 			|| (!in_array(1, $member['groups']) && count(array_intersect($member['groups'], $member_groups)) == 0))
 			continue;
 
-		$msgOptions['body'] = str_ireplace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['original_name'] . '[/member]', $msgOptions['body']);
+		$msgOptions['body'] = str_ireplace('@' . $member['real_name'], '[member=' . $member['id'] . ']' . $member['real_name'] . '[/member]', $msgOptions['body']);
 
 		// Why would an idiot mention themselves?
 		if ($user_info['id'] == $member['id'])
@@ -226,7 +250,7 @@ function mentions_process_store(array $mentions, $id_post, $subject, $approved =
 		{
 			$replacements = array(
 				'POSTNAME' => $subject,
-				'MENTIONNAME' => $mention['original_name'],
+				'MENTIONNAME' => $mention['real_name'],
 				'MEMBERNAME' => $user_info['name'],
 				'POSTLINK' => $scripturl . '?msg=' . $id_post,
 			);
