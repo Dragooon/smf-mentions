@@ -14,6 +14,7 @@ var mentionInit = function()
 			at: '@',
 			data: [],
 			show_the_at: true,
+			limit: 10,
 			callbacks: {
 				remote_filter: function(query, callback)
 				{
