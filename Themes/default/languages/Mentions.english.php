@@ -24,3 +24,6 @@ $txt['mentions_post_time'] = 'Mentioned Time';
 $txt['permissionname_mention_member'] = 'Mention members';
 $txt['permissionhelp_mention_member'] = 'Allow members to tag other members and alert them via mentioning them via @username syntax';
 $txt['email_mentions'] = 'E-mail mention notifications';
+$txt['mentions_remove_days'] = 'Remove mentions older than these days<div class="smalltext">This option will remove mentions which are seen and older than the specified amount of days. Make sure to enable the <a href="' . $scripturl . '?action=admin;area=scheduledtasks">Scheduled Task here</a></div>';
+$txt['mentions_email_default'] = 'Enable mentions e-mail by default<div class="smalltext">Check this if you\'d like to have new users receive e-mail notification for their mentions by default</div>';
+$txt['mentions_permissions_notice'] = 'Please remember to set permissions to allow individual members to mention others';

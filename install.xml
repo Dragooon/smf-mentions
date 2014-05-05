@@ -64,4 +64,25 @@
 
 	</file>
 
+
+	<file name="$sourcedir/Admin.php">
+
+		<operation>
+			<search position="after"><![CDATA[						// Mod Authors for a "ADD AFTER" on this line. Ensure you end your change with a comma. For example:]]></search>
+			<add><![CDATA[						'mentions' => array($txt['mentions']),
+]]></add>
+		</operation>
+
+	</file>
+
+	<file name="$sourcedir/ManageSettings.php">
+
+		<operation>
+			<search position="after"><![CDATA[		// Mod authors, once again, if you have a whole section to add do it AFTER this line, and keep a comma at the end.]]></search>
+			<add><![CDATA[		'mentions' => 'ModifyMentionsSettings',
+]]></add>
+		</operation>
+
+	</file>
+
 </modification>

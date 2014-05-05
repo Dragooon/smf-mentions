@@ -13,8 +13,8 @@
 		<modification>install-english.xml</modification>
 		<require-dir name="Sources" destination="$boarddir" />
 		<require-dir name="Themes" destination="$boarddir" />
-        <redirect url="?action=admin;area=permissions" type="inline">Redirecting to the permissions page, please grant the appropriate membergroups permissions to mention other members</redirect>
-    </install>
+		<redirect url="?action=admin;area=modsettings;sa=mentions" type="inline">Redirecting to the mention's settings page, also please remember to set the individual permissions for membergroups in order to allow mentions</redirect>
+	</install>
 
 	<uninstall for="2.0 - 2.0.99">
 		<code>uninstall.php</code>
@@ -22,9 +22,10 @@
 		<modification reverse="true">install-english.xml</modification>
 		<remove-file name="$sourcedir/Mentions.php" />
 		<remove-file name="$themedir/languages/Mentions.english.php" />
-        <remove-file name="$themedir/scripts/mentions.js" />
-        <remove-file name="$themedir/css/mentions.css" />
-        <remove-file name="$themedir/scripts/jquery.atwho.js" />
+		<remove-file name="$themedir/languages/Mentions.english-utf8.php" />
+		<remove-file name="$themedir/scripts/mentions.js" />
+		<remove-file name="$themedir/css/mentions.css" />
+		<remove-file name="$themedir/scripts/jquery.atwho.js" />
 	</uninstall>
 
 </package-info>

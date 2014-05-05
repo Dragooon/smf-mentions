@@ -16,6 +16,7 @@ $hooks = array(
 	'integrate_load_permissions' => 'mentions_permissions',
 	'integrate_bbc_codes' => 'mentions_bbc',
 	'integrate_menu_buttons' => 'mentions_menu',
+	'integrate_register' => 'mentions_register',
 );
 
 foreach ($hooks as $hook => $function)

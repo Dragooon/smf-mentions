@@ -509,3 +509,52 @@ function list_getMentions($start, $items_per_page, $sort, $where, $where_vars = 
 
 	return $mentions;
 }
+
+/**
+ * Hook callback for integrate_register
+ *
+ * @param array &$register_options
+ * @param array &$theme_vars
+ * @return void
+ */
+function mentions_register(array &$register_options, array &$theme_vars)
+{
+	global $modSettings;
+	$register_options['email_mentions'] = !empty($modSettings['mentions_email_default']) ? 1 : 0;
+}
+
+/**
+ * Function for managing mention's settings
+ *
+ * @param bool $return_config
+ * @return array
+ */
+function ModifyMentionsSettings($return_config = false)
+{
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+
+	loadLanguage('Mentions');
+
+	$config_vars = array(
+		array('desc', 'mentions_permissions_notice'),
+		array('int', 'mentions_remove_days'),
+		array('check', 'mentions_email_default'),
+	);
+
+	if ($return_config)
+		return $config_vars;
+
+	// Saving?
+	if (isset($_GET['save']))
+	{
+		checkSession();
+
+		saveDBSettings($config_vars);
+		redirectexit('action=admin;area=featuresettings;sa=mentions');
+	}
+
+	$context['post_url'] = $scripturl . '?action=admin;area=featuresettings;save;sa=mentions';
+	$context['settings_title'] = $txt['mentions'];
+
+	prepareDBSettingContext($config_vars);
+}

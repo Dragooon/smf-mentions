@@ -10,7 +10,7 @@
 if (!defined('SMF'))
 	require_once('SSI.php');
 
-global $smcFunc;
+global $smcFunc, $modSettings;
 
 db_extend('Packages');
 db_extend('Extra');
@@ -37,6 +37,7 @@ $hooks = array(
 	'integrate_load_permissions' => 'mentions_permissions',
 	'integrate_bbc_codes' => 'mentions_bbc',
 	'integrate_menu_buttons' => 'mentions_menu',
+	'integrate_register' => 'mentions_register',
 );
 
 foreach ($hooks as $hook => $function)
@@ -61,3 +62,9 @@ if ($smcFunc['db_num_rows']($request) == 0)
 		array('id_task')
 	);
 $smcFunc['db_free_result']($request);
+
+if (!isset($modSettings['mentions_email_default']))
+	updateSettings(array(
+		'mentions_email_default' => 1,
+		'mentions_remove_days' => 7,
+	));
