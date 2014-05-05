@@ -520,7 +520,7 @@ function list_getMentions($start, $items_per_page, $sort, $where, $where_vars = 
 function mentions_register(array &$register_options, array &$theme_vars)
 {
 	global $modSettings;
-	$register_options['email_mentions'] = !empty($modSettings['mentions_email_default']) ? 1 : 0;
+	$register_options['register_vars']['email_mentions'] = !empty($modSettings['mentions_email_default']) ? 1 : 0;
 }
 
 /**
