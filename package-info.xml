@@ -4,7 +4,7 @@
 	<name>@mention members</name>
 	<id>Dragooon:mentions</id>
 	<type>modification</type>
-	<version>1.1</version>
+	<version>1.1.1</version>
 
 	<install for="2.0 - 2.0.99">
 		<readme parsebbc="true">README.bbc</readme>
