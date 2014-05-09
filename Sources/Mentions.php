@@ -142,8 +142,8 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 		}
 	}
 
-	foreach ($matches as &$match)
-		$match = substr(implode('', $match), 1);
+	foreach ($matches as $k => $match)
+		$matches[$k] = substr(implode('', $match), 1);
 
 	// Names can have spaces, or they can't...we try to match every possible
 	if (empty($matches) || !allowedTo('mention_member'))
@@ -202,6 +202,7 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 			'groups' => array_unique(array_merge(array($row['id_group'], $row['id_post_group']), explode(',', $row['additional_groups']))),
 		);
 	$smcFunc['db_free_result']($request);
+
 	if (empty($members))
 		return;
 
@@ -574,10 +575,10 @@ function ModifyMentionsSettings($return_config = false)
 		checkSession();
 
 		saveDBSettings($config_vars);
-		redirectexit('action=admin;area=featuresettings;sa=mentions');
+		redirectexit('action=admin;area=modsettings;sa=mentions');
 	}
 
-	$context['post_url'] = $scripturl . '?action=admin;area=featuresettings;save;sa=mentions';
+	$context['post_url'] = $scripturl . '?action=admin;area=modsettings;save;sa=mentions';
 	$context['settings_title'] = $txt['mentions'];
 
 	prepareDBSettingContext($config_vars);
