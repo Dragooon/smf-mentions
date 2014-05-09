@@ -32,7 +32,7 @@
 		</operation>
 
 		<operation>
-			<search position="after"><![CDATA[	// Change the post.]]></search>
+			<search position="after"><![CDATA[	// This is longer than it has to be, but makes it so we only set/change what we have to.]]></search>
 			<add><![CDATA[
 	mentions_process_post($msgOptions, $topicOptions, $posterOptions);
 	if (!empty($msgOptions['mentions']))
