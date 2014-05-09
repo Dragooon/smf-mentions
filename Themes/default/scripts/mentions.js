@@ -8,49 +8,43 @@
 
 var mentionInit = function()
 {
-	$(function()
-	{
-		var config = {
-			at: '@',
-			data: [],
-			show_the_at: true,
-			limit: 10,
-			callbacks: {
-				remote_filter: function(query, callback)
-				{
-					if (query.length < 2)
-						return;
+	var config = {
+		at: '@',
+		data: [],
+		show_the_at: true,
+		limit: 10,
+		callbacks: {
+			remote_filter: function (query, callback) {
+				if (query.length < 2)
+					return;
 
-					$.ajax({
-						url: smf_scripturl + '?action=suggest;' + smf_sessvar + '=' + smf_sessid + ';xml',
-						method: 'GET',
-						data: {
-							search: query,
-							suggest_type: 'member'
-						},
-						success: function(data)
-						{
-							var members = $(data).find('smf > items > item');
-							var callbackArray = [];
-							$.each(members, function(index, item)
-							{
-								callbackArray[callbackArray.length] = {
-									name: $(item).text()
-								};
-							});
+				$.ajax({
+					url: smf_scripturl + '?action=suggest;' + smf_sessvar + '=' + smf_sessid + ';xml',
+					method: 'GET',
+					data: {
+						search: query,
+						suggest_type: 'member'
+					},
+					success: function (data) {
+						var members = $(data).find('smf > items > item');
+						var callbackArray = [];
+						$.each(members, function (index, item) {
+							callbackArray[callbackArray.length] = {
+								name: $(item).text()
+							};
+						});
 
-							callback(callbackArray);
-						}
-					});
-				}
+						callback(callbackArray);
+					}
+				});
 			}
-		};
+		}
+	};
 
-		var iframe = $('#html_message');
-		if (typeof iframe[0] != 'undefined')
-			$(iframe[0].contentDocument.body).atwho(config);
-		$('textarea[name=message]').atwho(config);
-	});
+	var iframe = $('#html_message');
+	if (typeof iframe[0] != 'undefined')
+		$(iframe[0].contentDocument.body).atwho(config);
+	$('textarea[name=message]').atwho(config);
 };
 
 var atWhoElement = document.createElement('script');
@@ -58,18 +52,16 @@ atWhoElement.src = atwho_url;
 atWhoElement.type = 'text/javascript';
 atWhoElement.onload = mentionInit;
 
-if (typeof $ == 'undefined')
-{
+if (typeof $ == 'undefined') {
 	var scriptElement = document.createElement('script');
 	scriptElement.src = jquery_url;
 	scriptElement.type = 'text/javascript';
 
-	scriptElement.onload = function()
-	{
-		document.getElementsByTagName('head')[0].appendChild(atWhoElement);
+	scriptElement.onload = function () {
+		document.body.appendChild(atWhoElement);
 	};
 
-	document.getElementsByTagName('head')[0].appendChild(scriptElement);
+	document.body.appendChild(scriptElement);
 }
 else
-	document.getElementsByTagName('head')[0].appendChild(atWhoElement);
+	document.body.appendChild(atWhoElement);

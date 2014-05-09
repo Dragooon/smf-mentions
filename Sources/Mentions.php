@@ -327,7 +327,7 @@ function mentions_post_scripts()
 	if (!allowedTo('mention_member'))
 		return;
 
-	$context['html_headers'] .= '
+	$context['insert_after_template'] .= '
 		<script type="text/javascript">
 			var jquery_url = "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js";
 			var atwho_url = "' . $settings['default_theme_url'] . '/scripts/jquery.atwho.js";
