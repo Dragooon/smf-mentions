@@ -556,14 +556,17 @@ function mentions_register(array &$register_options, array &$theme_vars)
  */
 function ModifyMentionsSettings($return_config = false)
 {
-	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings, $smcFunc;
 
 	loadLanguage('Mentions');
+
+	$modSettings['mentions_email_default_now'] = 0;
 
 	$config_vars = array(
 		array('desc', 'mentions_permissions_notice'),
 		array('int', 'mentions_remove_days'),
 		array('check', 'mentions_email_default'),
+		array('check', 'mentions_email_default_now'),
 	);
 
 	if ($return_config)
@@ -573,6 +576,13 @@ function ModifyMentionsSettings($return_config = false)
 	if (isset($_GET['save']))
 	{
 		checkSession();
+
+		if (!empty($_POST['mentions_email_default_now']))
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}members
+				SET email_mentions = 1',
+				array()
+			);
 
 		saveDBSettings($config_vars);
 		redirectexit('action=admin;area=modsettings;sa=mentions');
