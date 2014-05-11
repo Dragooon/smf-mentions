@@ -36,7 +36,7 @@
 			<add><![CDATA[
 	mentions_process_post($msgOptions, $topicOptions, $posterOptions);
 	if (!empty($msgOptions['mentions']))
-		mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject'], $msgOptions['approved']);
+		mentions_process_store($msgOptions['mentions'], $msgOptions['id'], $msgOptions['subject'], isset($msgOptions['approved']) ? $msgOptions['approved'] : 1);
 ]]></add>
 		</operation>
 
