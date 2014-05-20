@@ -136,7 +136,7 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 			if (count($matches[count($matches) - $i]) > 60)
 			{
 				$depth--;
-				break;
+				continue;
 			}
 			$matches[count($matches) - $i][] = $char;
 		}
