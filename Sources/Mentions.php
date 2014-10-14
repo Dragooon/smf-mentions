@@ -258,9 +258,9 @@ function mentions_process_store(array $mentions, $id_post, $subject, $approved =
 
 			loadLanguage('Mentions');
 
-			$subject = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_subject']);
+			$emailsubject = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_subject']);
 			$body = str_replace(array_keys($replacements), array_values($replacements), $txt['mentions_body']);
-			sendmail($mention['email_address'], $subject, $body);
+			sendmail($mention['email_address'], $emailsubject, $body);
 		}
 
 		if ($approved)
