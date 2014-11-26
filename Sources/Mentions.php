@@ -145,7 +145,6 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 	foreach ($matches as $k => $match)
 		$matches[$k] = substr(implode('', $match), 1);
 
-	// Names can have spaces, or they can't...we try to match every possible
 	if (empty($matches) || !allowedTo('mention_member'))
 		return;
 
@@ -155,12 +154,11 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 	foreach ($matches as $match)
 	{
 		$match = preg_split('/([^\w])/', $match, -1, PREG_SPLIT_DELIM_CAPTURE);
-
 		for ($i = 1; $i <= count($match); $i++)
-			$names[] = implode('', array_slice($match, 0, $i));
+			$names[] = htmlspecialchars(trim(implode('', array_slice($match, 0, $i))));
 	}
 
-	$names = array_unique(array_map('trim', $names));
+	$names = array_unique($names);
 
 	// Get the membergroups this message can be seen by
 	$request = $smcFunc['db_query']('', '
