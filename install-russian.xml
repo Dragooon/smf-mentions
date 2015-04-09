@@ -4,7 +4,7 @@
     <id>Dragooon:Mentions</id>
     <name>@mention members</name>
 
-    <file name="$languagedir/Modifications.russian-utf8.php" error="skip">
+    <file name="$languagedir/Modifications.russian.php" error="skip">
 
         <operation>
             <search position="end" />
