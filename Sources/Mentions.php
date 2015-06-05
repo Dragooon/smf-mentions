@@ -368,7 +368,7 @@ function Mentions_Profile($memID)
 	loadLanguage('Mentions');
 
 	if (!empty($_POST['save']) && $user_info['id'] == $memID)
-		updateMemberData($memID, array('email_mentions' => (bool) !empty($_POST['email_mentions'])));
+		updateMemberData($memID, array('email_mentions' => (integer) !empty($_POST['email_mentions'])));
 
 	if ($memID == $user_info['id'])
 	{
