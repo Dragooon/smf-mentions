@@ -121,9 +121,9 @@ function mentions_process_post(&$msgOptions, &$topicOptions, &$posterOptions)
 	$matches = array();
 	$string = str_split($body);
 	$depth = 0;
-	foreach ($string as $char)
+	foreach ($string as $position => $char)
 	{
-		if ($char == '@')
+		if ($char == '@' && empty(trim($string[$position - 1])))
 		{
 			$depth++;
 			$matches[] = array();
