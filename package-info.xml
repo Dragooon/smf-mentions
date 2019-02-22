@@ -11,6 +11,8 @@
 		<database>install.php</database>
 		<modification>install.xml</modification>
 		<modification>install-english.xml</modification>
+        <modification>install-russian.xml</modification>
+        <modification>install-russian-utf8.xml</modification>
 		<require-dir name="Sources" destination="$boarddir" />
 		<require-dir name="Themes" destination="$boarddir" />
 		<redirect url="?action=admin;area=modsettings;sa=mentions" type="inline">Redirecting to the mention's settings page, also please remember to set the individual permissions for membergroups in order to allow mentions</redirect>
@@ -23,6 +25,8 @@
 		<remove-file name="$sourcedir/Mentions.php" />
 		<remove-file name="$themedir/languages/Mentions.english.php" />
 		<remove-file name="$themedir/languages/Mentions.english-utf8.php" />
+        <remove-file name="$themedir/languages/Mentions.russian.php" />
+        <remove-file name="$themedir/languages/Mentions.russian-utf8.php" />
 		<remove-file name="$themedir/scripts/mentions.js" />
 		<remove-file name="$themedir/css/mentions.css" />
 		<remove-file name="$themedir/scripts/jquery.atwho.js" />
